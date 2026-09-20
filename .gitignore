@@ -1,0 +1,42 @@
+# Secretos
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Datos locales de servicios
+deploy/data/
+deploy/surreal_data/
+deploy/notebook_data/
+deploy/postgres_data/
+deploy/redis_data/
+deploy/minio_data/
+deploy/caddy_data/
+deploy/caddy_config/
+deploy/searxng/
+deploy/initdb/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Node
+node_modules/
+.next/
+dist/
+build/
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE
+.vscode/
+.idea/

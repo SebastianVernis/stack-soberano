@@ -1,0 +1,26 @@
+{
+	email {$ACME_EMAIL}
+}
+
+# Autenticación fuerte (OAuth/OIDC) pendiente: Fase 3 del ROADMAP.
+# No exponer estos hosts sin auth; varias interfaces traen auth débil por defecto.
+
+{$DOMAIN_CHAT} {
+	encode gzip
+	reverse_proxy open-webui:8080
+}
+
+{$DOMAIN_NOTEBOOK} {
+	encode gzip
+	reverse_proxy open-notebook:8502
+}
+
+{$DOMAIN_N8N} {
+	encode gzip
+	reverse_proxy n8n:5678
+}
+
+{$DOMAIN_METABASE} {
+	encode gzip
+	reverse_proxy metabase:3000
+}

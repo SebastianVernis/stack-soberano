@@ -1,0 +1,171 @@
+services:
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - open-webui
+
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "127.0.0.1:11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  searxng:
+    image: searxng/searxng:latest
+    restart: unless-stopped
+    environment:
+      SEARXNG_BASE_URL: ${SEARXNG_BASE_URL}
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    ports:
+      - "127.0.0.1:8888:8080"
+    cap_drop:
+      - ALL
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    restart: unless-stopped
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+      ENABLE_WEB_SEARCH: "True"
+      WEB_SEARCH_ENGINE: searxng
+      SEARXNG_QUERY_URL: http://searxng:8080/search?q=<query>
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${OPENWEBUI_DB}
+      ENABLE_MEMORIES: "True"
+      ENABLE_OPENAI_API: "False"
+    volumes:
+      - open_webui_data:/app/backend/data
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+      searxng:
+        condition: service_started
+
+  surrealdb:
+    image: surrealdb/surrealdb:v2
+    restart: unless-stopped
+    command: ["start", "--log", "info", "--user", "${SURREAL_USER}", "--pass", "${SURREAL_PASSWORD}", "rocksdb:/mydata/mydatabase.db"]
+    user: root
+    environment:
+      SURREAL_EXPERIMENTAL_GRAPHQL: "true"
+    volumes:
+      - surreal_data:/mydata
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "/surreal", "is-ready", "--conn", "ws://localhost:8000/rpc", "--user", "${SURREAL_USER}", "--pass", "${SURREAL_PASSWORD}"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  open-notebook:
+    image: lfnovo/open_notebook:v1-latest
+    restart: unless-stopped
+    environment:
+      OPEN_NOTEBOOK_ENCRYPTION_KEY: ${OPEN_NOTEBOOK_ENCRYPTION_KEY}
+      OPEN_NOTEBOOK_PASSWORD: ${OPEN_NOTEBOOK_PASSWORD}
+      SURREAL_URL: ws://surrealdb:8000/rpc
+      SURREAL_USER: ${SURREAL_USER}
+      SURREAL_PASSWORD: ${SURREAL_PASSWORD}
+      SURREAL_NAMESPACE: ${SURREAL_NAMESPACE}
+      SURREAL_DATABASE: ${SURREAL_DATABASE}
+      OLLAMA_API_BASE: http://ollama:11434
+      OPEN_NOTEBOOK_WORKER_MAX_TASKS: "1"
+      CORS_ORIGINS: ${NOTEBOOK_CORS_ORIGINS}
+      OPEN_NOTEBOOK_MAX_UPLOAD_SIZE_MB: "200"
+    volumes:
+      - notebook_data:/app/data
+    ports:
+      - "127.0.0.1:8502:8502"
+      - "127.0.0.1:5055:5055"
+    depends_on:
+      surrealdb:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+
+  open-notebook-worker:
+    image: lfnovo/open_notebook:v1-latest
+    restart: unless-stopped
+    command: ["python", "-m", "open_notebook.worker"]
+    environment:
+      OPEN_NOTEBOOK_ENCRYPTION_KEY: ${OPEN_NOTEBOOK_ENCRYPTION_KEY}
+      SURREAL_URL: ws://surrealdb:8000/rpc
+      SURREAL_USER: ${SURREAL_USER}
+      SURREAL_PASSWORD: ${SURREAL_PASSWORD}
+      OLLAMA_API_BASE: http://ollama:11434
+      OPEN_NOTEBOOK_WORKER_MAX_TASKS: "1"
+    volumes:
+      - notebook_data:/app/data
+    depends_on:
+      surrealdb:
+        condition: service_healthy
+
+  mcpo-notebook:
+    image: ghcr.io/open-webui/mcpo:main
+    restart: unless-stopped
+    command: ["--host", "0.0.0.0", "--port", "8000", "--api-key", "${MCPO_KEY}", "--", "uvx", "open-notebook-mcp"]
+    environment:
+      OPEN_NOTEBOOK_URL: http://open-notebook:5055
+      OPEN_NOTEBOOK_PASSWORD: ${OPEN_NOTEBOOK_PASSWORD}
+    ports:
+      - "127.0.0.1:8100:8000"
+    depends_on:
+      - open-notebook
+
+volumes:
+  caddy_data:
+  caddy_config:
+  postgres_data:
+  redis_data:
+  open_webui_data:
+  ollama_data:
+  surreal_data:
+  notebook_data:
+
+networks:
+  default:
+    name: stack-soberano
