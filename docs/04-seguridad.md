@@ -26,10 +26,10 @@
 - CE no permite apps OAuth: usar `stdio` con personal access token de alcance mínimo.
 - No dar permisos de escritura por defecto a agentes sobre issues/ciclos/roadmaps.
 
-### n8n (fair-code)
-- Uso interno únicamente; no revender ni exponer como servicio.
-- Credenciales en el almacén de n8n; nunca en el prompt del agente.
-- Acceso a nivel de instancia y de flujo, habilitado explícitamente.
+### Activepieces (MIT)
+- Licencia permisiva, sin restricciones de reventa.
+- Credenciales en el almacén de Activepieces; nunca en el prompt del agente.
+- **Su egress debe pasar por el gateway supervisor o por allowlist.** Las automatizaciones llaman APIs directamente y, si no se gatean, evaden la política de solo-lectura igual que un agente.
 
 ### Gotenberg
 - Tiene **CVEs 2026** (SSRF vía Chromium/LibreOffice, bypass de blocklist de ExifTool, path traversal). Mantener actualizado, en red interna, sin salida a Internet y sin entrada de terceros.

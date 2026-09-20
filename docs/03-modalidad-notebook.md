@@ -57,7 +57,7 @@ Límites declarados por el propio proyecto (`VISION.md`) — importante para no 
                                      │
                  ┌───────────────────┼───────────────────────┐
                  ▼                   ▼                       ▼
-         Ollama / vLLM        n8n (flujos)           SurrealDB :8000
+         Ollama / vLLM    Activepieces (MIT)      SurrealDB :8000
         (LLM + embeddings)    ingesta/artefactos      (solo interno 127.0.0.1)
                                      │
                                      ▼
@@ -137,7 +137,7 @@ uvx mcpo --host 0.0.0.0 --port 8000 --api-key "$MCPO_KEY" \
 
 Luego se registra en **Open WebUI → Admin → Tool Servers** como servidor OpenAPI (`spec URL` = `http://mcpo:8000`). En Docker, `mcpo` debe conocer `OPEN_NOTEBOOK_URL` y `OPEN_NOTEBOOK_PASSWORD`.
 
-> Alternativa sin MCP: al ser `open-notebook` una API REST completa, n8n puede llamarla directamente (`POST /sources`, `POST /search/ask`, `POST /chat/execute`) sin depender del paquete MCP de terceros. Útil si se quiere evitar una dependencia externa.
+> Alternativa sin MCP: al ser `open-notebook` una API REST completa, Activepieces puede llamarla directamente (`POST /sources`, `POST /search/ask`, `POST /chat/execute`) sin depender del paquete MCP de terceros. Útil si se quiere evitar una dependencia externa.
 
 ### Política de permisos del agente
 
@@ -232,7 +232,7 @@ Notas de despliegue:
 - Con Reverse Proxy, v1.1+ solo exige enrutar `:8502` (la UI proxya `/api/*` internamente); aun así conviene fijar `API_URL`.
 - Perfiles de Compose separados: `core` (Notebook surrealdb) vs `integrations` (mcpo) vs `artifacts` (MinIO) para no levantar todo de golpe.
 
-## 8. Automatizaciones (n8n)
+## 8. Automatizaciones (Activepieces)
 
 - **Ingesta desde trabajo**: issue/PR/comentario cerrado en Plane o GitHub → `POST /sources` (texto o URL) en el cuaderno del proyecto.
 - **Cierre de sprint**: `POST /sources/{id}/insights` con transformación de resumen → `note` → dispara Carbone/Gotenberg para el reporte.
@@ -243,7 +243,7 @@ Notas de despliegue:
 
 1. **Fase 1 — levantar y aislar**: Open Notebook + SurrealDB + proveedor local (Ollama/vLLM), sin exponer; validar worker, cifrado e ingesta de una fuente.
 2. **Fase 2 — integrar herramientas**: puente MCP/mcpo hacia Open WebUI/LibreChat; mapear cuadernos ↔ espacios de Plane; definir el contrato de datos.
-3. **Fase 3 — operar y gobernar**: automatizaciones n8n, artefactos a MinIO/Nextcloud, OAuth en el proxy, retención, auditoría de qué agente leyó/escribió.
+3. **Fase 3 — operar y gobernar**: automatizaciones Activepieces, artefactos a MinIO/Nextcloud, OAuth en el proxy, retención, auditoría de qué agente leyó/escribió.
 
 ## 10. Riesgos y puntos abiertos
 

@@ -2,7 +2,7 @@
 
 # Alternativas self-hosted a Perplexity — investigación original
 
-> **Nota de adaptación (stack-soberano).** Este documento conserva la investigación original de la plataforma. La política del proyecto es **self-hosted y source-available**, no "solo OSI-open-source": se aceptan componentes **fair-code / source-available** (n8n, Carbone, Dify) para uso interno, siempre que la licencia permita operarlos self-hosted y no revenderlos como servicio. El detalle y las reglas de cumplimiento están en [`02-stack-y-licencias.md`](02-stack-y-licencias.md).
+> **Nota de adaptación (stack-soberano).** Este documento conserva la investigación original de la plataforma. La política del proyecto es **self-hosted y source-available**, no "solo OSI-open-source": se aceptan componentes **fair-code / source-available** (Carbone, Dify) para uso interno, siempre que la licencia permita operarlos self-hosted y no revenderlos como servicio. Para automatización el proyecto usa **Activepieces (MIT)**, no n8n. El detalle y las reglas de cumplimiento están en [`02-stack-y-licencias.md`](02-stack-y-licencias.md).
 
 Sí es viable, pero no hay hoy un reemplazo open source único que reproduzca *todo* Perplexity —chat con fuentes web, agentes, cómputo aislado, conectores y gestión de proyectos— con la misma madurez integrada. Para un entorno self-hosted, la alternativa más sólida es montar una **arquitectura modular basada en Open WebUI o LibreChat, MCP, Plane y n8n**, usando modelos locales o APIs externas según el nivel de privacidad y coste que quieras.[^1_1][^1_2][^1_3][^1_4]
 

@@ -4,7 +4,7 @@ Principio rector: **soberanía primero, y solo lo necesario por fase**. Ningún 
 
 Decisiones que rigen el recorte:
 
-- **100% uso interno.** Fair-code (n8n, Carbone) es aceptable; sin reventa. Ver [`docs/02`](docs/02-stack-y-licencias.md).
+- **100% uso interno.** Fair-code (Carbone) es aceptable; sin reventa. La automatización usa **Activepieces (MIT)**, no n8n. Ver [`docs/02`](docs/02-stack-y-licencias.md).
 - **Solo lectura por defecto.** La escritura se gana caso por caso mediante el gateway supervisor. Ver [`docs/adr/ADR-001`](docs/adr/ADR-001-gateway-supervisor.md).
 - **El historial se conserva.** Es un activo y no sale de nosotros. Ver [`docs/06`](docs/06-datos.md).
 - **Una sola base vectorial durable.** Open WebUI solo para documentos efímeros de chat; el corpus vive en Notebook.
@@ -48,7 +48,7 @@ Se añade **cuando existan fuentes que merezca la pena mantener**, no antes.
 ## Fase 2 — Trabajo (cuando exista un flujo real)
 
 - [ ] Plane CE + `plane-mcp-server` en **lectura** (stdio + PAT; CE no soporta OAuth)
-- [ ] n8n **solo** cuando haya una automatización concreta que lo justifique
+- [ ] Activepieces **solo** cuando haya una automatización concreta que lo justifique
 - [ ] Contrato cuaderno ↔ espacio de Plane
 
 **Criterio de salida:** la investigación puede vincularse a un work item sin duplicar datos.

@@ -70,12 +70,12 @@ Modelo actor ──propone tool call──► GATEWAY (PEP)
 ### Escritura ganada, no permanente
 
 - La escritura se concede con **token de capacidad acotado** (recurso + tarea + caducidad), no de forma global.
-- `needs_human` escala a aprobación humana en la interfaz (Open WebUI/LibreChat) o vía n8n.
+- `needs_human` escala a aprobación humana en la interfaz (Open WebUI/LibreChat) o vía Activepieces.
 - Toda decisión —`allow`, `deny`, `needs_human`— queda **auditada**.
 
 ## Consecuencias
 
-- El modo lectura es el **default del transporte**, aplicable a Open WebUI, LibreChat y n8n por igual.
+- El modo lectura es el **default del transporte**, aplicable a Open WebUI, LibreChat y Activepieces por igual. Las automatizaciones también deben pasar por el gateway o por allowlist de egress.
 - Se añade latencia y consumo de GPU en las escrituras; mitigado con el fast-path y un modelo pequeño.
 - El supervisor es un nuevo punto de fallo: puede denegar de más. Se mitiga con reglas deterministas por encima y revisión de denegaciones.
 - Si el supervisor es el mismo modelo que el actor, comparten punto ciego; de ahí la separación.

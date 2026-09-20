@@ -1,22 +1,21 @@
 services:
-  n8n:
-    image: docker.n8n.io/n8nio/n8n:latest
+  activepieces:
+    image: activepieces/activepieces:latest
     restart: unless-stopped
     environment:
-      N8N_HOST: ${N8N_HOST}
-      N8N_PROTOCOL: https
-      WEBHOOK_URL: https://${N8N_HOST}/
-      DB_TYPE: postgresdb
-      DB_POSTGRESDB_HOST: postgres
-      DB_POSTGRESDB_DATABASE: ${N8N_DB}
-      DB_POSTGRESDB_USER: ${POSTGRES_USER}
-      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
-      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
-      N8N_DIAGNOSTICS_ENABLED: "false"
+      AP_FRONTEND_URL: ${AP_FRONTEND_URL}
+      AP_JWT_SECRET: ${AP_JWT_SECRET}
+      AP_ENCRYPTION_KEY: ${AP_ENCRYPTION_KEY}
+      AP_POSTGRES_HOST: postgres
+      AP_POSTGRES_PORT: "5432"
+      AP_POSTGRES_DATABASE: ${ACTIVEPIECES_DB}
+      AP_POSTGRES_USER: ${POSTGRES_USER}
+      AP_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      AP_TELEMETRY_ENABLED: "false"
     volumes:
-      - n8n_data:/home/node/.n8n
+      - activepieces_data:/root/.activepieces
     ports:
-      - "127.0.0.1:5678:5678"
+      - "127.0.0.1:8081:80"
     depends_on:
       - postgres
 
@@ -84,7 +83,7 @@ services:
   # stack-soberano; no se replica aquí para evitar una configuración incompleta.
 
 volumes:
-  n8n_data:
+  activepieces_data:
   metabase_data:
   minio_data:
   comfyui_data:

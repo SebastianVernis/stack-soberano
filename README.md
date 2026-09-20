@@ -2,7 +2,7 @@
 
 Plataforma de IA **self-hosted** y **source-available** que sustituye a Perplexity y a un stack SaaS de gestión de proyectos, cómputo, investigación y entregables. Todo corre en infraestructura propia; los datos, embeddings y credenciales no salen de ella.
 
-> **Política de licencias:** el objetivo es *self-hosted y auditable*, no pureza OSI. Se aceptan componentes **fair-code / source-available** (n8n, Carbone, Dify) para uso interno. Reglas en [`docs/02-stack-y-licencias.md`](docs/02-stack-y-licencias.md).
+> **Política de licencias:** el objetivo es *self-hosted y auditable*, no pureza OSI. Se aceptan componentes **fair-code / source-available** (Carbone, Dify) para uso interno. La automatización usa **Activepieces (MIT)** en lugar de n8n. Reglas en [`docs/02-stack-y-licencias.md`](docs/02-stack-y-licencias.md).
 
 ## Capacidades objetivo
 
@@ -12,7 +12,7 @@ Plataforma de IA **self-hosted** y **source-available** que sustituye a Perplexi
 | Modelos locales | Ollama (1 usuario) / vLLM (multi-usuario) | Diseñado |
 | Búsqueda web privada con fuentes | SearXNG | Diseñado |
 | Gestión de proyectos e issues | Plane CE + `plane-mcp-server` | Diseñado |
-| Automatización y orquestación | n8n (fair-code) | Diseñado |
+| Automatización y orquestación | Activepieces (MIT) | Diseñado |
 | **Modalidad Notebook** (investigación curada, RAG, podcasts) | Open Notebook | Diseñado — [`docs/03`](docs/03-modalidad-notebook.md) |
 | Imágenes e infografías | ComfyUI | Fase 2 |
 | Gráficas, BI y tableros | Metabase / Apache Superset | Fase 2 |
@@ -33,7 +33,7 @@ Proxy inverso (Caddy/Traefik)
 Servicios de soporte
 ├── Ollama / vLLM               → LLM + embeddings
 ├── SearXNG                     → búsqueda web privada
-├── n8n                         → flujos, ingesta, artefactos
+├── Activepieces (MIT)          → flujos, ingesta, artefactos
 ├── ComfyUI                     → imagen (GPU)
 ├── Carbone + Gotenberg         → documentos y PDF
 ├── SurrealDB                   → datos de Notebook (interno)

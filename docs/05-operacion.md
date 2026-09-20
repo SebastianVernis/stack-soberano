@@ -9,7 +9,7 @@ Cada capa depende de la inferior:
 1. **Datos**: PostgreSQL, Redis, SurrealDB, MinIO.
 2. **Modelos**: Ollama o vLLM (verificar endpoint OpenAI-compatible).
 3. **Servicios base**: SearXNG, Open Notebook API + worker.
-4. **Aplicaciones**: Open WebUI/LibreChat, Plane, n8n, Metabase.
+4. **Aplicaciones**: Open WebUI/LibreChat, Plane, Activepieces, Metabase.
 5. **Borde**: proxy inverso.
 6. **Pesados** (nodos GPU): ComfyUI, Carbone/Gotenberg, ONLYOFFICE.
 
@@ -24,7 +24,7 @@ Cada capa depende de la inferior:
 | SurrealDB | conexión `ws://surrealdb:8000/rpc` |
 | Open WebUI | `GET /health` interno |
 | Plane | endpoint de salud del API |
-| n8n | `GET :5678/healthz` |
+| Activepieces | `GET :80/` |
 | Ollama | `GET :11434/api/tags` |
 | vLLM | `GET /health` |
 | Gotenberg | `GET /health` o `:3000/docs` |
@@ -52,7 +52,7 @@ Cada capa depende de la inferior:
 ## Logs y observabilidad
 
 - API de Notebook: logs estructurados (loguru); revisar errores de migración al arrancar.
-- n8n: historial de ejecuciones e Insights.
+- Activepieces: historial de ejecuciones.
 - Proxy: logs de acceso y errores 4xx/5xx.
 - SurrealDB: métricas del contenedor.
 - Centralizar si es posible (Loki/Grafana o equivalente).

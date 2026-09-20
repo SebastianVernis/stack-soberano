@@ -15,9 +15,9 @@
 	reverse_proxy open-notebook:8502
 }
 
-{$DOMAIN_N8N} {
+{$DOMAIN_AUTOMATION} {
 	encode gzip
-	reverse_proxy n8n:5678
+	reverse_proxy activepieces:80
 }
 
 {$DOMAIN_METABASE} {

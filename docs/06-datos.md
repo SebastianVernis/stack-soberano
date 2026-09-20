@@ -44,7 +44,7 @@ Ingesta → Clasificar → Procesar/embed → Usar → Retener (historial) → [
 
 | Etapa | Responsable | Disparador |
 | :-- | :-- | :-- |
-| Ingesta | Usuario / n8n | Necesidad de conservar una fuente |
+| Ingesta | Usuario / Activepieces | Necesidad de conservar una fuente |
 | Clasificar | Usuario (o regla) | Antes de procesar |
 | Procesar/embed | Worker de Notebook | Automático al crear la fuente |
 | Usar | Agentes (solo lectura) | Consulta / investigación |
