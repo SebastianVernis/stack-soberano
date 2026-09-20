@@ -1,80 +1,90 @@
 # Roadmap — stack-soberano
 
-Principio rector: **primero soberanía y trazabilidad, luego comodidad**. Cada fase deja el sistema funcionando y auditable, sin big-bang.
+Principio rector: **soberanía primero, y solo lo necesario por fase**. Ningún servicio entra sin un caso de uso escrito en una frase. Cada fase deja el sistema funcionando; no hay big-bang.
 
-Convenciones de estado: `[ ]` pendiente · `[~]` en curso · `[x]` hecho.
+Decisiones que rigen el recorte:
+
+- **100% uso interno.** Fair-code (n8n, Carbone) es aceptable; sin reventa. Ver [`docs/02`](docs/02-stack-y-licencias.md).
+- **Solo lectura por defecto.** La escritura se gana caso por caso mediante el gateway supervisor. Ver [`docs/adr/ADR-001`](docs/adr/ADR-001-gateway-supervisor.md).
+- **El historial se conserva.** Es un activo y no sale de nosotros. Ver [`docs/06`](docs/06-datos.md).
+- **Una sola base vectorial durable.** Open WebUI solo para documentos efímeros de chat; el corpus vive en Notebook.
+
+Convenciones: `[ ]` pendiente · `[~]` en curso · `[x]` hecho · `[−]` congelado.
 
 ---
 
 ## Fase 0 — Fundamentos del repositorio
 
-Objetivo: repo, documentación y decisiones de licencia cerradas.
-
-- [x] Estructura de directorios y documentos base
-- [x] Política de licencias (fair-code aceptado para uso interno) — `docs/02`
+- [x] Estructura, documentación y decisión de licencias
 - [x] Diseño de la modalidad Notebook
+- [x] Sweet spot de datos y ADR del gateway supervisor
 - [ ] Validar comando del worker de Open Notebook contra la imagen real
-- [ ] Fijar versiones de imagen (pin por digest) en los compose
-- [ ] `LICENSE` (MIT para el repo) y `CONTRIBUTING.md`
+- [ ] Fijar versiones de imagen por digest en los compose
+- [ ] `CONTRIBUTING.md`
 
-## Fase 1 — Núcleo de chat y conocimiento
+## Fase 1 — Reemplazo soberano de Perplexity (3 servicios)
 
-Objetivo: chat general privado con memoria y búsqueda web con fuentes.
+**Objetivo:** chat privado con búsqueda web citada. Nada más.
 
-- [ ] Open WebUI operativo detrás del proxy
-- [ ] Ollama (single-user) o vLLM (multi-usuario) como backend de modelos
-- [ ] SearXNG con `format: json` habilitado e integrado en Open WebUI
-- [ ] Memoria nativa de Open WebUI con política de retención (`docs/04`)
-- [ ] Open Notebook + SurrealDB + worker para la modalidad notebook
-- [ ] Puente MCP (`open-notebook-mcp`) vía `mcpo` o MCP nativo
-- [ ] `OPEN_NOTEBOOK_ENCRYPTION_KEY` y secretos fuera de Git
+- [ ] Open WebUI tras el proxy
+- [ ] Ollama como backend de modelos (vLLM solo si aparece concurrencia real)
+- [ ] SearXNG con `format: json` habilitado
+- [ ] Memoria nativa con reglas de `docs/06`
+- [ ] Secretos fuera de Git
 
-**Criterio de salida:** un usuario puede chatear, buscar en web con citas y guardar/recuperar investigación en un cuaderno, todo self-hosted.
+**Criterio de salida:** puedo preguntar, obtener respuesta con fuentes web citadas y conservar mi historial, todo self-hosted.
 
-## Fase 2 — Trabajo, cómputo y entregables
+## Fase 1.5 — Investigación curada (solo si hay corpus que conservar)
 
-Objetivo: conectar la operación y producir artefactos reproducibles.
+Se añade **cuando existan fuentes que merezca la pena mantener**, no antes.
 
-- [ ] Plane CE + `plane-mcp-server` (stdio + PAT; CE no soporta OAuth)
-- [ ] Mapeo cuaderno ↔ espacio de Plane y contrato de datos (`docs/01`)
-- [ ] n8n (fair-code) para ingesta y flujos recurrentes
-- [ ] Sandbox de código aislado (Open Terminal MIT / contenedor efímero)
-- [ ] ComfyUI en nodo GPU separado
-- [ ] Carbone (fair-code) + Gotenberg para documentos y PDF
-- [ ] Metabase o Superset para KPIs
-- [ ] Plantillas versionadas en Git (5–8 plantillas corporativas)
+- [ ] Open Notebook + SurrealDB + worker
+- [ ] Gateway supervisor en modo lectura delante de MCP
+- [ ] Puente `open-notebook-mcp` vía gateway (mcpo/MCP)
+- [ ] Regla de una sola base vectorial durable aplicada
 
-**Criterio de salida:** un issue cerrado se convierte en borrador de reporte y un paquete de entrega, sin intervención manual.
+**Criterio de salida:** guardo fuentes, las recupero con alcance por cuaderno y el agente solo puede leer.
 
-## Fase 3 — Operación, gobierno y escala
+## Fase 2 — Trabajo (cuando exista un flujo real)
 
-Objetivo: endurecer, automatizar y auditar.
+- [ ] Plane CE + `plane-mcp-server` en **lectura** (stdio + PAT; CE no soporta OAuth)
+- [ ] n8n **solo** cuando haya una automatización concreta que lo justifique
+- [ ] Contrato cuaderno ↔ espacio de Plane
 
-- [ ] OAuth/OIDC en el proxy para todas las interfaces (hoy: auth básica de Notebook)
-- [ ] ONLYOFFICE Docs para edición posterior de DOCX/XLSX/PPTX
-- [ ] MinIO o Nextcloud para artefactos, versionado y retención
-- [ ] Mem0 OSS si se necesita memoria compartida entre agentes
-- [ ] Auditoría: registrar qué agente leyó/escribió (MCP, comandos, cambios)
-- [ ] Backups probados de PostgreSQL, SurrealDB y volúmenes de artefactos
-- [ ] SSO, roles y segmentación de red; egress restringido en sandboxes
+**Criterio de salida:** la investigación puede vincularse a un work item sin duplicar datos.
 
-**Criterio de salida:** operación con aprobación humana para acciones mutables y auditoría completa.
+## Fase 3 — Entregables (bajo demanda, uno por uno)
+
+- [ ] Carbone + Gotenberg al necesitar documentos con plantilla
+- [ ] Metabase o Superset al necesitar KPIs
+- [ ] ONLYOFFICE al necesitar edición posterior
+- [ ] MinIO/Nextcloud al acumular artefactos
+- [ ] Sandbox de código aislado al necesitar cómputo
+
+## Congelado hasta necesidad real
+
+- [−] ComfyUI (consume GPU)
+- [−] Mem0 (memoria compartida entre agentes)
+- [−] Dify / Langflow (orquestación visual)
+- [−] LibreChat (se activa solo si Open WebUI se queda corto en MCP nativo)
+- [−] vLLM (hasta tener concurrencia)
 
 ## Backlog / exploración
 
-- [ ] Migración SurrealDB v2 → v3 (seguir plataforma upstream de Open Notebook)
-- [ ] Evaluar Superset vs Metabase según perfil de usuarios
-- [ ] Endurecer `mcpo` con API key y red interna
-- [ ] Evaluar alternativas fair-code de n8n (Activepieces MIT, Kestra Apache-2.0) si cambian las condiciones
+- [ ] SurrealDB v2 → v3 (seguir upstream de Open Notebook)
+- [ ] Endurecer el gateway supervisor con reglas verificables
 - [ ] Perplexica/Vane como UI de búsqueda-respuesta directa (opcional)
+- [ ] Mapa de sustitución comercial si el proyecto deja de ser interno (`docs/02`)
 
 ## Riesgos transversales
 
 | Riesgo | Mitigación |
 | :-- | :-- |
-| Fair-code restringe reventa/SaaS | Uso interno únicamente; no white-label; documentado en `docs/02` |
+| Fair-code restringe reventa/SaaS | Uso interno; mapa de sustitución en `docs/02` |
 | Open Notebook es single-user hoy | No prometer multiusuario; seguir upstream [#712] |
-| Auth básica y CORS abierto | No exponer directo; OAuth en proxy (Fase 3) |
-| Gotenberg con CVEs 2026 (SSRF/path traversal) | Aislado, actualizado, sin exposición pública |
+| Auth básica y CORS abierto | No exponer directo; OAuth en el proxy |
+| Inyección de prompt con acción | Gateway supervisor fail-closed + lectura por defecto (`ADR-001`) |
+| Gotenberg con CVEs 2026 | Aislado, actualizado, sin exposición pública |
 | SurrealDB operación propia | Backups y runbook (`docs/05`) |
-| Duplicar RAG (Notebook vs Open WebUI) | Asignar dominios de conocimiento distintos |
+| Divergencia de RAG | Una sola base vectorial durable (`docs/06`) |
+| Complejidad operativa | Recorte por fase; sin servicio sin caso de uso |

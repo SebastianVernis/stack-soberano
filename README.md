@@ -55,7 +55,10 @@ stack-soberano/
 │   ├── 02-stack-y-licencias.md
 │   ├── 03-modalidad-notebook.md
 │   ├── 04-seguridad.md
-│   └── 05-operacion.md
+│   ├── 05-operacion.md
+│   ├── 06-datos.md
+│   └── adr/
+│       └── ADR-001-gateway-supervisor.md
 ├── deploy/
 │   ├── docker-compose.core.yml
 │   ├── docker-compose.assets.yml
@@ -85,6 +88,8 @@ docker compose -f docker-compose.core.yml --profile core up -d
 - [Modalidad Notebook](docs/03-modalidad-notebook.md)
 - [Seguridad](docs/04-seguridad.md)
 - [Operación](docs/05-operacion.md)
+- [Datos: deber ser y sweet spot](docs/06-datos.md)
+- [ADR-001: gateway supervisor](docs/adr/ADR-001-gateway-supervisor.md)
 - [Roadmap](ROADMAP.md)
 
 ## Licencia

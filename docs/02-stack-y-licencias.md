@@ -40,6 +40,21 @@ Este proyecto es **self-hosted y source-available**. No exige que cada pieza sea
 5. **Fair-code ≠ OSI.** En la documentación del proyecto se etiqueta correctamente como *source-available / fair-code*, nunca como "open source" a secas.
 6. **Licencias de terceros.** Este repo se licencia MIT, pero cada servicio arrastra su propia licencia; ante duda, revisar el `LICENSE` del componente antes de desplegar.
 
+## Mapa de sustitución comercial (si deja de ser 100% interno)
+
+Hoy el proyecto es de uso interno y **no se cambia nada**. Si algún día se incorporan terceros o clientes, este es el plan de sustitución, por carril:
+
+| Carril | Componentes | Si se comercializa |
+| :-- | :-- | :-- |
+| **Verde** (OSI, seguro para embeber/distribuir) | Ollama, vLLM, LibreChat (MIT), Open Notebook (MIT), Gotenberg (MIT), Langflow (MIT), Superset (Apache-2.0) | Sin cambios |
+| **Amarillo** (fair-code, solo interno) | n8n, Carbone CE | **n8n → Activepieces (MIT) o Kestra (Apache-2.0)**; **Carbone → docxtemplater (MIT) + Gotenberg** |
+| **Rojo** (branding / open-core) | Open WebUI (cláusula de marca), Dify (prohibido multi-tenant), Metabase (gobernanza de pago) | Open WebUI → mantener marca o comprar licencia; Metabase → Superset; Dify → no usar |
+| **AGPL embebido** | Plane CE, MinIO, ONLYOFFICE, SearXNG | **Consumir por API sin modificar el código** (el AGPL no se dispara por usar la API); si se modifica y se distribuye/expone por red, liberar cambios |
+
+**Regla de oro del carril AGPL:** no forkear AGPL y meterlo dentro de un producto. Usarlo por su API no contagia; embeber una versión modificada, sí.
+
+La mitigación estructural ya está: al hablar todo por **MCP / OpenAI-compatible / REST**, sustituir una pieza es barato. El único eslabón rígido es Notebook↔SurrealDB, que es MIT.
+
 ## Cuándo revisar una licencia
 
 - Antes de **exponer cualquier servicio a usuarios externos** o clientes.
